@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "title": "iphone 16",
+    "description": "the best iphone 16 pro max",
+    "code": 2345,
+    "price": 12345,
+    "stock": 20,
+    "category": "tegnology",
+    "thumbnails": []
+  },
+  {
+    "id": 2,
+    "title": "watch 2",
+    "description": "the best watch 2",
+    "code": 1345,
+    "price": 123456,
+    "stock": 40,
+    "category": "tegnology",
+    "thumbnails": []
+  }
+]
