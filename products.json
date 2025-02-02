@@ -1,22 +1,69 @@
 [
   {
     "id": 1,
-    "title": "iphone 16",
-    "description": "the best iphone 16 pro max",
-    "code": 2345,
-    "price": 12345,
-    "stock": 20,
-    "category": "tegnology",
-    "thumbnails": []
-  },
-  {
-    "id": 2,
     "title": "watch 2",
     "description": "the best watch 2",
     "code": 1345,
     "price": 123456,
     "stock": 40,
     "category": "tegnology",
-    "thumbnails": []
+    "thumbnails": [
+      "https://i.pinimg.com/474x/60/9b/31/609b3143c6ac3d80336620b6619a00e3.jpg"
+    ]
+  },
+  {
+    "id": 2,
+    "title": "hols",
+    "description": "hols",
+    "code": "23556",
+    "price": "345467",
+    "category": "holi",
+    "thumbnails": [
+      "https://i.pinimg.com/474x/35/9b/67/359b678dcf7c86867b5e9d9bdcb1e9b1.jpg"
+    ]
+  },
+  {
+    "id": 3,
+    "title": "fbfbf",
+    "description": "ffdf",
+    "code": "333",
+    "price": "444",
+    "category": "fdf",
+    "thumbnails": [
+      "https://i.pinimg.com/474x/19/70/09/197009ea602a25ef7a67891495ed114b.jpg"
+    ]
+  },
+  {
+    "id": 4,
+    "title": "zapatos",
+    "description": "zapatillas",
+    "code": "4444",
+    "price": "56678",
+    "category": "zapatos",
+    "thumbnails": [
+      "https://i.pinimg.com/474x/09/be/87/09be87fb20b70fb9a47b80345e85d65b.jpg"
+    ]
+  },
+  {
+    "id": 5,
+    "title": "chaqueta",
+    "description": "chaqueta adidas",
+    "code": "111",
+    "price": "123434",
+    "category": "chaqueta",
+    "thumbnails": [
+      "https://i.pinimg.com/474x/36/54/63/36546323619ff8b3545919bf89cdee80.jpg"
+    ]
+  },
+  {
+    "id": 6,
+    "title": "pantalon",
+    "description": "pantalon ",
+    "code": "1223",
+    "price": "4444",
+    "category": "pantalon",
+    "thumbnails": [
+      "https://i.pinimg.com/474x/a0/e3/08/a0e308a60e92773941e7ceb957ee4c7e.jpg"
+    ]
   }
 ]

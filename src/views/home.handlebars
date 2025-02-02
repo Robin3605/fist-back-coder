@@ -1,0 +1,15 @@
+<div class="container">
+    <div class="row">
+        {{#each products}}
+            <div class="col-md-3">
+                <div class="card text-center border-0 fw-light" style="height: 100%;">
+                    <img src="{{this.thumbnails}}" class="card-img-top img-fluid" alt="{{this.title}}" style="height: 150px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{this.title}}</h5>
+                        <p class="card-text">$ {{this.price}}</p>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+</div>

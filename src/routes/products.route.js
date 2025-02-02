@@ -17,16 +17,12 @@ router.get("/", async (req, res) => {
         "Internal Server Error, Error in get all products method in products route"
       );
   }
-  
 });
 
 router.get("/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
-    const productsData = await fs.promises.readFile(
-      "products.json",
-      "utf-8"
-    );
+    const productsData = await fs.promises.readFile("products.json", "utf-8");
     const products = JSON.parse(productsData);
     const product = products.find((product) => product.id.toString() === pid);
     if (!product) {
@@ -47,9 +43,8 @@ router.post("/", async (req, res) => {
   try {
     const { title, description, code, price, stock, category, thumbnails } =
       req.body;
-    const productsFilePath = path.join("products.json");
+    const productsFilePath = path.join("../products.json");
     if (!fs.existsSync(productsFilePath)) {
-      
       fs.writeFileSync(productsFilePath, "[]");
     }
     if (!title || !description || !code || !price || !stock || !category) {
@@ -72,6 +67,8 @@ router.post("/", async (req, res) => {
       productsFilePath,
       JSON.stringify(products, null, 2)
     );
+
+    req.io.emit("realTimeProducts", products); // Emitir la lista completa de productos
     res.send(newProduct);
   } catch (error) {
     console.log("Error in post method in products route: ", error);
@@ -122,7 +119,7 @@ router.put("/:pid", async (req, res) => {
 router.delete("/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
-    const productsFilePath = path.join("products.json");
+    const productsFilePath = path.join("../products.json");
     const productsData = await fs.promises.readFile(productsFilePath, "utf-8");
     const products = JSON.parse(productsData);
     const productIndex = products.findIndex(
@@ -136,7 +133,9 @@ router.delete("/:pid", async (req, res) => {
       productsFilePath,
       JSON.stringify(products, null, 2)
     );
-    res.send("Product deleted successfully.");
+
+    req.io.emit("realTimeProducts", products); // Emitir la lista completa de productos
+    res.send("Producto eliminado correctamente");
   } catch (error) {
     console.log("Error in delete method in products route: ", error);
     res

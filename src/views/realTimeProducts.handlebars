@@ -1,0 +1,50 @@
+<div class="container">
+    <div id="content" class="row"></div>
+    <div class="row my-5">
+        <div class="col-md-6">
+            <h2>Agregar Producto</h2>
+            <form id="add-product-form">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Título</label>
+                    <input type="text" class="form-control" id="title" required>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Descripción</label>
+                    <input type="text" class="form-control" id="description" required>
+                </div>
+                <div class="mb-3">
+                    <label for="code" class="form-label">Código</label>
+                    <input type="text" class="form-control" id="code" required>
+                </div>
+                <div class="mb-3">
+                    <label for="price" class="form-label">Precio</label>
+                    <input type="text" class="form-control" id="price" required>
+                </div>
+                <div class="mb-3">
+                    <label for="category" class="form-label">Categoría</label>
+                    <input type="text" class="form-control" id="category" required>
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Imagen</label>
+                    <input type="text" class="form-control" id="image" required>
+                </div>
+                <button type="button" class="btn text-white bg-black" onclick="agregarProducto()">Enviar</button>
+            </form>
+            <div id="producto_estado1" class="my-3"></div>
+        </div>
+        <div class="col-md-6">
+            <h2>Eliminar Producto</h2>
+            <form id="delete-product-form">
+                <div class="mb-3">
+                    <label for="product_id" class="form-label"># Producto</label>
+                    <select id="product_id" class="form-control" required></select>
+                </div>
+                <button type="button" class="btn text-white bg-black" onclick="eliminarProducto()">Enviar</button>
+            </form>
+            <div id="producto_estado2" class="my-3"></div>
+        </div>
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="../public/js/realTimeProducts.js"></script>
