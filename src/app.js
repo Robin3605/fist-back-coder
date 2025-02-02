@@ -17,7 +17,7 @@ app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 
-// Middlewares
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/public', express.static(path.join(__dirname, '/public')));
@@ -93,7 +93,7 @@ io.on("connection", (socket) => {
   });
 });
 
-// Iniciar servidor
+
 httpServer.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });

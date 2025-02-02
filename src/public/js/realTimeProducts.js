@@ -62,8 +62,8 @@ socket.on("loadProducts", (products) => {
   products.forEach((product) => {
     const option = document.createElement("option");
     option.value = product.id; // Asignar el ID del producto
-    option.text = `Producto ${product.id}`; // Texto a mostrar
-    select.appendChild(option); // Agregar la opción al select
+    option.text = `Producto ${product.id}`; 
+    select.appendChild(option); 
   });
 });
 const eliminarProducto = (id) => {

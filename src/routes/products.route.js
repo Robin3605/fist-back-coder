@@ -68,7 +68,7 @@ router.post("/", async (req, res) => {
       JSON.stringify(products, null, 2)
     );
 
-    req.io.emit("realTimeProducts", products); // Emitir la lista completa de productos
+    req.io.emit("realTimeProducts", products); 
     res.send(newProduct);
   } catch (error) {
     console.log("Error in post method in products route: ", error);
@@ -134,7 +134,7 @@ router.delete("/:pid", async (req, res) => {
       JSON.stringify(products, null, 2)
     );
 
-    req.io.emit("realTimeProducts", products); // Emitir la lista completa de productos
+    req.io.emit("realTimeProducts", products); 
     res.send("Producto eliminado correctamente");
   } catch (error) {
     console.log("Error in delete method in products route: ", error);
