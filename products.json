@@ -65,5 +65,16 @@
     "thumbnails": [
       "https://i.pinimg.com/474x/a0/e3/08/a0e308a60e92773941e7ceb957ee4c7e.jpg"
     ]
+  },
+  {
+    "id": 7,
+    "title": "zapatos",
+    "description": "zapatillas",
+    "code": "1111",
+    "price": "3456",
+    "category": "zapatos",
+    "thumbnails": [
+      "https://i.pinimg.com/474x/26/ef/70/26ef705407b46525f7c37467c9430f80.jpg"
+    ]
   }
 ]
