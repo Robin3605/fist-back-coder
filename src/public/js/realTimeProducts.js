@@ -24,9 +24,21 @@ const agregarProducto = () => {
   const title = document.getElementById("title").value;
   const description = document.getElementById("description").value;
   const code = document.getElementById("code").value;
-  const price = document.getElementById("price").value;
+  const price = parseFloat(document.getElementById("price").value);
+  const stock = parseInt(document.getElementById("stock").value);
   const category = document.getElementById("category").value;
   const image = document.getElementById("image").value;
+
+  if (!title || !description || !code || !price || !stock || !category || !image) {
+    document.getElementById("producto_estado1").innerText = "Todos los campos son requeridos.";
+    return;
+}
+
+
+if (isNaN(price) || isNaN(stock)) {
+    document.getElementById("producto_estado1").innerText = "El precio y el stock deben ser números.";
+    return;
+}
 
   const product = {
     title,
@@ -44,8 +56,10 @@ const agregarProducto = () => {
   document.getElementById("description").value = "";
   document.getElementById("code").value = "";
   document.getElementById("price").value = "";
+  document.getElementById("stock").value = "";
   document.getElementById("category").value = "";
   document.getElementById("image").value = "";
+  
 
   document.getElementById("producto_estado1").innerHTML = `
     <div class="alert alert-success" role="alert">El producto se agregó correctamente!</div>
