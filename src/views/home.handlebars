@@ -1,15 +1,51 @@
 <div class="container">
-    <div class="row">
-        {{#each products}}
-            <div class="col-md-3">
-                <div class="card text-center border-0 fw-light" style="height: 100%;">
-                    <img src="{{this.thumbnails}}" class="card-img-top img-fluid" alt="{{this.title}}" style="height: 150px; object-fit: cover;">
-                    <div class="card-body">
-                        <h5 class="card-title">{{this.title}}</h5>
-                        <p class="card-text">$ {{this.price}}</p>
-                    </div>
-                </div>
+  <!-- Lista de productos -->
+  <div class="row">
+    {{#each products}}
+      <div class="col-md-3">
+        <div class="card text-center border-0 fw-light" style="height: 100%;">
+          {{#if this.thumbnails.length}}
+            <img
+              src="{{this.thumbnails.[0]}}"
+              class="card-img-top img-fluid"
+              alt="{{this.title}}"
+              style="height: 150px; object-fit: cover;"
+            />
+          {{else}}
+            <div class="card-img-top bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 150px;">
+              Sin imagen
             </div>
-        {{/each}}
+          {{/if}}
+          <div class="card-body">
+            <h5 class="card-title">{{this.title}}</h5>
+            <p class="card-text">$ {{this.price}}</p>
+            <a href="/products/{{this._id}}" class="btn btn-primary">Ver Detalle</a>
+          </div>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+
+  <!-- Paginación -->
+  <div class="row">
+    <div class="col text-center">
+      {{#if pagination.hasPrevPage}}
+        <a
+          href="/?limit={{pagination.limit}}&page={{pagination.prevPage}}&sort={{pagination.sort}}&query={{pagination.query}}"
+          class="text-decoration-none mx-3"
+        >⬅️</a>
+      {{/if}}
+
+      {{#if pagination.page}}
+        <a href="#" class="text-decoration-none mx-3">{{pagination.page}}</a>
+      {{/if}}
+
+      {{#if pagination.hasNextPage}}
+        <a
+          href="/?limit={{pagination.limit}}&page={{pagination.nextPage}}&sort={{pagination.sort}}&query={{pagination.query}}"
+          class="text-decoration-none mx-3"
+        >➡️</a>
+      {{/if}}
     </div>
+  </div>
 </div>

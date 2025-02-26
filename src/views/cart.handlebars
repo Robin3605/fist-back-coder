@@ -1,0 +1,88 @@
+<div class="container mt-5">
+  <h1>Carrito #{{cart._id}}</h1>
+  {{#if successMessage}}
+    <div id="alert" class="alert alert-success" role="alert">
+      {{successMessage}}
+    </div>
+  {{/if}}
+  
+  <div class="row mt-4">
+    <div class="col-md-8">
+      {{#each cart.products}}
+        <div class="card mb-3">
+          <div class="row g-0">
+            <div class="col-md-4">
+              {{#if this.product.thumbnails.length}}
+                <img src="{{this.product.thumbnails.[0]}}" class="img-fluid rounded-start" alt="{{this.product.title}}">
+              {{else}}
+                <div class="placeholder-image bg-secondary text-white d-flex align-items-center justify-content-center">
+                  Sin imagen
+                </div>
+              {{/if}}
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title">{{this.product.title}}</h5>
+                <p class="card-text">Cantidad: {{this.quantity}}</p>
+                <p class="card-text">Precio unitario: ${{this.product.price}}</p>
+                {{!-- <p class="card-text">Total: ${{multiply this.product.price this.quantity}}</p> --}}
+                
+                <!-- Botón para eliminar un producto específico -->
+                <form action="/api/carts/{{../cart._id}}/products/{{this.product._id}}?_method=DELETE" method="POST" style="display: inline;">
+                  <button type="submit" class="btn btn-danger">Eliminar Producto</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      {{else}}
+        <div class="alert alert-info">El carrito está vacío</div>
+      {{/each}}
+    </div>
+    
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Resumen</h5>
+          <p class="card-text">Total productos: {{cart.products.length}}</p>
+          <p class="card-text">Total a pagar: ${{totalCart cart.products}}</p>
+          <a href="/" class="btn btn-primary">Seguir comprando</a>
+
+          <!-- Botón para eliminar el carrito completo -->
+          <form action="/api/carts/{{cart._id}}?_method=DELETE" method="POST" style="margin-top: 10px;">
+            <button type="submit" class="btn btn-danger">Eliminar Carrito</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Función para calcular el total del carrito
+  function totalCart(products) {
+    return products.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+  }
+
+  // Función para multiplicar precio por cantidad
+  function multiply(price, quantity) {
+    return price * quantity;
+  }
+
+  
+  // Ocultar el alert después de 3 segundos
+  const alert = document.getElementById("alert");
+  if (alert) {
+    setTimeout(() => {
+      alert.remove();
+    }, 3000);
+  }
+
+</script>
+
+<style>
+  .placeholder-image {
+    height: 200px;
+    font-size: 1.2rem;
+  }
+</style>

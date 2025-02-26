@@ -45,6 +45,7 @@ if (isNaN(price) || isNaN(stock)) {
     description,
     code,
     price,
+    stock,
     category,
     thumbnails: [image],
   };
@@ -75,14 +76,21 @@ socket.on("loadProducts", (products) => {
   select.innerHTML = ""; // Limpiar el select antes de agregar opciones
   products.forEach((product) => {
     const option = document.createElement("option");
-    option.value = product.id; // Asignar el ID del producto
-    option.text = `Producto ${product.id}`; 
+    option.value = product._id; // Asegúrate de usar el campo correcto para el ID
+    option.text = `# ${product.title}`; // Cambia esto si necesitas mostrar otro campo
     select.appendChild(option); 
   });
 });
-const eliminarProducto = (id) => {
-  const productId = document.getElementById("product_id").value;
-  socket.emit("deleteProduct", productId);
+const eliminarProducto = () => {
+  const pid = document.getElementById("product_id").value; // Obtener el ID del select
+  if (!pid) {
+    document.getElementById("producto_estado2").innerHTML = `
+      <div class="alert alert-danger" role="alert">Por favor, selecciona un producto para eliminar.</div>
+    `;
+    return; // Salir si no hay ID
+  }
+
+  socket.emit("deleteProduct", pid); // Emitir el ID correcto
 
   document.getElementById("producto_estado2").innerHTML = `
     <div class="alert alert-success" role="alert">El producto se eliminó correctamente!</div>
@@ -91,8 +99,5 @@ const eliminarProducto = (id) => {
   setTimeout(() => {
     document.getElementById("producto_estado2").innerHTML = "";
   }, 3000);
-
-  return productos.filter(producto => producto.id !== id);
-
 };
 

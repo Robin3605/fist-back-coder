@@ -1,41 +1,84 @@
 import { Router } from "express";
 import fs from "fs";
 import path from "path";
+import { Product } from "../models/products.model.js";
+import mongoose from "mongoose";
 
 const router = Router();
 
 router.get("/", async (req, res) => {
   try {
-    const productsData = await fs.promises.readFile("products.json", "utf-8");
-    const products = JSON.parse(productsData);
-    res.send(products);
+    const { limit = 10, page = 1, sort, query } = req.query;
+
+    const options = {
+      limit: parseInt(limit),
+      page: parseInt(page),
+      sort: sort ? { price: sort === "asc" ? 1 : -1 } : undefined,
+      lean: true,
+    };
+
+    const filter = {};
+
+    if (query) {
+      if (query === "available") {
+        filter.status = true;
+      } else {
+        filter.category = query;
+      }
+    }
+
+    const result = await Product.paginate(filter, options);
+
+    res.status(200).json({
+      status: "success",
+      payload: result.docs,
+      totalPages: result.totalPages,
+      prevPage: result.prevPage,
+      nextPage: result.nextPage,
+      page: result.page,
+      hasPrevPage: result.hasPrevPage,
+      hasNextPage: result.hasNextPage,
+      prevLink: result.hasPrevPage
+        ? `/api/products?limit=${limit}&page=${result.prevPage}&sort=${
+            sort || ""
+          }&query=${query || ""}`
+        : null,
+      nextLink: result.hasNextPage
+        ? `/api/products?limit=${limit}&page=${result.nextPage}&sort=${
+            sort || ""
+          }&query=${query || ""}`
+        : null,
+    });
+
+    if (!result) {
+      return res.status(404).json({ message: "No hay productos" });
+    }
   } catch (error) {
-    console.log("Error in get all products method in products route: ", error);
-    res
-      .status(500)
-      .send(
-        "Internal Server Error, Error in get all products method in products route"
-      );
+    res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
   }
 });
 
 router.get("/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
-    const productsData = await fs.promises.readFile("products.json", "utf-8");
-    const products = JSON.parse(productsData);
-    const product = products.find((product) => product.id.toString() === pid);
-    if (!product) {
-      return res.status(404).send("Product not found");
+
+    // Solo buscar por ID de MongoDB
+    if (!mongoose.Types.ObjectId.isValid(pid)) {
+      return res.status(400).json({ message: "ID inválido" });
     }
-    res.send(product);
+
+    const product = await Product.findById(pid).lean();
+
+    if (!product) {
+      return res.status(404).json({ message: "Producto no encontrado" });
+    }
+
+    res.status(200).json(product);
   } catch (error) {
-    console.log("Error in get one product method in products route: ", error);
-    res
-      .status(500)
-      .send(
-        "Internal Server Error, Error in get one product method in products route"
-      );
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -43,32 +86,28 @@ router.post("/", async (req, res) => {
   try {
     const { title, description, code, price, stock, category, thumbnails } =
       req.body;
-    const productsFilePath = path.join("../products.json");
-    if (!fs.existsSync(productsFilePath)) {
-      fs.writeFileSync(productsFilePath, "[]");
-    }
+
     if (!title || !description || !code || !price || !stock || !category) {
-      return res.status(400).send("All fields except thumbnails are required.");
+      return res.status(400).json({ message: "Faltan campos obligatorios" });
     }
-    const productsData = await fs.promises.readFile(productsFilePath, "utf-8");
-    const products = JSON.parse(productsData);
-    const newProduct = {
-      id: products.length + 1,
+    const existingProduct = await Product.findOne({ code });
+    if (existingProduct) {
+      return res
+        .status(400)
+        .json({ error: "El código ya existe. Por favor, usa otro." });
+    }
+
+    const newProduct = await Product.create({
       title,
       description,
       code,
-      price,
-      stock,
+      price: Number(price),
+      stock: Number(stock),
       category,
       thumbnails: thumbnails || [],
-    };
-    products.push(newProduct);
-    await fs.promises.writeFile(
-      productsFilePath,
-      JSON.stringify(products, null, 2)
-    );
-
-    req.io.emit("realTimeProducts", products); 
+    });
+    await newProduct.save();
+    req.io.emit("realTimeProducts", await Product.find().lean());
     res.send(newProduct);
   } catch (error) {
     console.log("Error in post method in products route: ", error);
@@ -80,33 +119,21 @@ router.post("/", async (req, res) => {
 
 router.put("/:pid", async (req, res) => {
   try {
-    const { pid } = req.params;
-    const { title, description, code, price, stock, category, thumbnails } =
-      req.body;
-    const productsFilePath = path.join("products.json");
-    const productsData = await fs.promises.readFile(productsFilePath, "utf-8");
-    const products = JSON.parse(productsData);
-    const productIndex = products.findIndex(
-      (product) => product.id.toString() === pid.toString()
-    );
-    if (productIndex === -1) {
-      return res.status(404).send("Product not found.");
+    if (!mongoose.Types.ObjectId.isValid(req.params.pid)) {
+      return res.status(400).json({ message: "ID inválido" });
     }
-    const updatedProduct = {
-      ...products[productIndex],
-      title: title || products[productIndex].title,
-      description: description || products[productIndex].description,
-      code: code || products[productIndex].code,
-      price: price || products[productIndex].price,
-      stock: stock || products[productIndex].stock,
-      category: category || products[productIndex].category,
-      thumbnails: thumbnails || products[productIndex].thumbnails,
-    };
-    products[productIndex] = updatedProduct;
-    await fs.promises.writeFile(
-      productsFilePath,
-      JSON.stringify(products, null, 2)
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params.pid,
+      { $set: req.body },
+      { new: true, runValidators: true }
     );
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: "Producto no encontrado" });
+    }
+
+    req.io.emit("realTimeProducts", await Product.find().lean());
     res.send(updatedProduct);
   } catch (error) {
     console.log("Error in put method in products route: ", error);
@@ -118,23 +145,17 @@ router.put("/:pid", async (req, res) => {
 
 router.delete("/:pid", async (req, res) => {
   try {
-    const { pid } = req.params;
-    const productsFilePath = path.join("../products.json");
-    const productsData = await fs.promises.readFile(productsFilePath, "utf-8");
-    const products = JSON.parse(productsData);
-    const productIndex = products.findIndex(
-      (product) => product.id.toString() === pid.toString()
-    );
-    if (productIndex === -1) {
-      return res.status(404).send("Product not found.");
+    if (!mongoose.Types.ObjectId.isValid(req.params.pid)) {
+      return res.status(400).json({ message: "ID inválido" });
     }
-    products.splice(productIndex, 1);
-    await fs.promises.writeFile(
-      productsFilePath,
-      JSON.stringify(products, null, 2)
-    );
 
-    req.io.emit("realTimeProducts", products); 
+    const deletedProduct = await Product.findByIdAndDelete(req.params.pid);
+
+    if (!deletedProduct) {
+      return res.status(404).json({ message: "Producto no encontrado" });
+    }
+
+    req.io.emit("realTimeProducts", await Product.find().lean());
     res.send("Producto eliminado correctamente");
   } catch (error) {
     console.log("Error in delete method in products route: ", error);

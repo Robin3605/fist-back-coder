@@ -87,5 +87,16 @@
     "thumbnails": [
       "https://i.pinimg.com/474x/f8/7d/84/f87d84d694270fc0ada11a2de830ccd3.jpg"
     ]
+  },
+  {
+    "id": 9,
+    "title": "fdfd",
+    "description": "esta es mi primer taresa",
+    "code": "23767",
+    "price": 1834,
+    "category": "chaqueta",
+    "thumbnails": [
+      "https://i.pinimg.com/474x/19/70/09/197009ea602a25ef7a67891495ed114b.jpg"
+    ]
   }
 ]
