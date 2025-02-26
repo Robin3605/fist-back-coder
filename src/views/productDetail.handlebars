@@ -26,7 +26,7 @@
             <li class="list-group-item"><strong>Código:</strong> {{product.code}}</li>
           </ul>
           <div class="mt-3">
-            <!-- Formulario para agregar al carrito -->
+            
             <form action="/api/carts" method="POST">
               <input type="hidden" name="productId" value="{{product._id}}">
               <button type="submit" class="btn btn-primary">Agregar al carrito</button>
@@ -40,7 +40,7 @@
 </div>
 
 <script>
-  // Ocultar el alert después de 3 segundos
+  
   const alert = document.getElementById("alert");
   if (alert) {
     setTimeout(() => {

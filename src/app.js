@@ -11,22 +11,22 @@ import { Product } from "./models/products.model.js";
 import dotenv from "dotenv";
 import path from "path";
 import methodOverride from "method-override"; 
-import fs from "fs";
+
 
 dotenv.config();
 
 const app = express();
 const PORT = 8080;
 
-// Configuración de Handlebars
+
 const hbs = handlebars.create({
   helpers: {
-    multiply: (a, b) => a * b, // Registrar el helper "multiply"
+    multiply: (a, b) => a * b, 
     totalCart: (products) =>
       products.reduce(
         (total, item) => total + item.product.price * item.quantity,
         0
-      ), // Registrar el helper "totalCart"
+      ), 
   },
 });
 
@@ -46,26 +46,26 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/public", express.static(path.join(__dirname, "/public")));
 
-// Crear servidor HTTP y Socket.IO
+
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 
-// Pasar `io` a las rutas
+
 app.use((req, res, next) => {
   req.io = io;
   next();
 });
 
-// Rutas
+
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/", viewsRouter);
 
-// Escuchar conexiones de Socket.IO
+
 io.on("connection", (socket) => {
   console.log("Nuevo cliente conectado");
 
-  // Escuchar eventos para agregar o eliminar productos
+  
   socket.on("realTimeProducts", async (product) => {
     try {
       const newProduct = await Product.create({
@@ -79,7 +79,7 @@ io.on("connection", (socket) => {
       });
       const products = await Product.find().lean();
       io.emit("realTimeProducts", products);
-      socket.emit("loadProducts", products); // Emitir la lista completa de productos
+      socket.emit("loadProducts", products); 
     } catch (error) {
       console.log("Error al agregar producto:", error);
     }
@@ -87,11 +87,7 @@ io.on("connection", (socket) => {
 
   socket.on("deleteProduct", async (pid) => {
     try {
-      //   if (pid) {
-      //     await deleteProduct({ params: { pid } }, res); // Asegúrate de que el ID no sea undefined
-      // } else {
-      //     console.error('ID del producto no definido');
-      // }
+      
       const deletedProduct = await Product.findByIdAndDelete(pid);
       if (!deletedProduct) {
         return;

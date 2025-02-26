@@ -1,6 +1,4 @@
 import { Router } from "express";
-import fs from "fs";
-import path from "path";
 import { Product } from "../models/products.model.js";
 import mongoose from "mongoose";
 
@@ -65,7 +63,7 @@ router.get("/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
 
-    // Solo buscar por ID de MongoDB
+    
     if (!mongoose.Types.ObjectId.isValid(pid)) {
       return res.status(400).json({ message: "ID inválido" });
     }

@@ -2,7 +2,7 @@ const socket = io();
 
 socket.on("realTimeProducts", (products) => {
   const content = document.getElementById("content");
-  content.innerHTML = ""; // Limpiar lista
+  content.innerHTML = ""; 
 
   products.forEach((product) => {
     const productHTML = `
@@ -52,7 +52,7 @@ if (isNaN(price) || isNaN(stock)) {
 
   socket.emit("realTimeProducts", product);
 
-  // Limpiar formulario
+  
   document.getElementById("title").value = "";
   document.getElementById("description").value = "";
   document.getElementById("code").value = "";
@@ -73,24 +73,24 @@ if (isNaN(price) || isNaN(stock)) {
 
 socket.on("loadProducts", (products) => {
   const select = document.getElementById("product_id");
-  select.innerHTML = ""; // Limpiar el select antes de agregar opciones
+  select.innerHTML = ""; 
   products.forEach((product) => {
     const option = document.createElement("option");
-    option.value = product._id; // Asegúrate de usar el campo correcto para el ID
-    option.text = `# ${product.title}`; // Cambia esto si necesitas mostrar otro campo
+    option.value = product._id; 
+    option.text = `# ${product.title}`; 
     select.appendChild(option); 
   });
 });
 const eliminarProducto = () => {
-  const pid = document.getElementById("product_id").value; // Obtener el ID del select
+  const pid = document.getElementById("product_id").value; 
   if (!pid) {
     document.getElementById("producto_estado2").innerHTML = `
       <div class="alert alert-danger" role="alert">Por favor, selecciona un producto para eliminar.</div>
     `;
-    return; // Salir si no hay ID
+    return; 
   }
 
-  socket.emit("deleteProduct", pid); // Emitir el ID correcto
+  socket.emit("deleteProduct", pid); 
 
   document.getElementById("producto_estado2").innerHTML = `
     <div class="alert alert-success" role="alert">El producto se eliminó correctamente!</div>

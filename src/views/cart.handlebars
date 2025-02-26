@@ -25,9 +25,7 @@
                 <h5 class="card-title">{{this.product.title}}</h5>
                 <p class="card-text">Cantidad: {{this.quantity}}</p>
                 <p class="card-text">Precio unitario: ${{this.product.price}}</p>
-                {{!-- <p class="card-text">Total: ${{multiply this.product.price this.quantity}}</p> --}}
                 
-                <!-- Botón para eliminar un producto específico -->
                 <form action="/api/carts/{{../cart._id}}/products/{{this.product._id}}?_method=DELETE" method="POST" style="display: inline;">
                   <button type="submit" class="btn btn-danger">Eliminar Producto</button>
                 </form>
@@ -48,7 +46,7 @@
           <p class="card-text">Total a pagar: ${{totalCart cart.products}}</p>
           <a href="/" class="btn btn-primary">Seguir comprando</a>
 
-          <!-- Botón para eliminar el carrito completo -->
+          
           <form action="/api/carts/{{cart._id}}?_method=DELETE" method="POST" style="margin-top: 10px;">
             <button type="submit" class="btn btn-danger">Eliminar Carrito</button>
           </form>
@@ -59,18 +57,18 @@
 </div>
 
 <script>
-  // Función para calcular el total del carrito
+  
   function totalCart(products) {
     return products.reduce((total, item) => total + (item.product.price * item.quantity), 0);
   }
 
-  // Función para multiplicar precio por cantidad
+  
   function multiply(price, quantity) {
     return price * quantity;
   }
 
   
-  // Ocultar el alert después de 3 segundos
+  
   const alert = document.getElementById("alert");
   if (alert) {
     setTimeout(() => {
