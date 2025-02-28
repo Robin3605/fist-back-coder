@@ -8,10 +8,18 @@ router.get("/", async (req, res) => {
   try {
     const { limit = 10, page = 1, sort, query } = req.query;
 
+    
+    let sortOptions = {};
+    if (sort === "asc") {
+      sortOptions = { price: 1 }; 
+    } else if (sort === "desc") {
+      sortOptions = { price: -1 }; 
+    }
+
     const options = {
       limit: parseInt(limit),
       page: parseInt(page),
-      sort: sort ? { price: sort === "asc" ? 1 : -1 } : undefined,
+      sort: sortOptions, 
       lean: true,
     };
 

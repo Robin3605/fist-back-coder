@@ -10,14 +10,30 @@ router.get("/", async (req, res) => {
   try {
     const { limit = 10, page = 1, sort, query } = req.query;
 
+    
+    let sortOptions = {};
+    if (sort === "asc") {
+      sortOptions = { price: 1 }; 
+    } else if (sort === "desc") {
+      sortOptions = { price: -1 }; 
+    }
+
     const options = {
       limit: parseInt(limit),
       page: parseInt(page),
-      sort: sort ? { price: sort === "asc" ? 1 : -1 } : undefined,
-      lean: true
+      sort: sortOptions, 
+      lean: true,
     };
 
-    const filter = query ? { category: query } : {};
+    const filter = {};
+
+    if (query) {
+      if (query === "available") {
+        filter.status = true; 
+      } else {
+        filter.category = query; 
+      }
+    }
 
     const result = await Product.paginate(filter, options);
 
@@ -25,6 +41,7 @@ router.get("/", async (req, res) => {
     console.log("Resultados obtenidos:", result.docs.length);
     console.log("Límite aplicado:", options.limit);
 
+    
     res.render("home", {
       products: result.docs, 
       pagination: {
@@ -35,8 +52,14 @@ router.get("/", async (req, res) => {
         nextPage: result.nextPage,
         limit: options.limit,
         sort,
-        query
-      }
+        query,
+        prevLink: result.hasPrevPage
+          ? `/?limit=${limit}&page=${result.prevPage}&sort=${sort || ""}&query=${query || ""}`
+          : null,
+        nextLink: result.hasNextPage
+          ? `/?limit=${limit}&page=${result.nextPage}&sort=${sort || ""}&query=${query || ""}`
+          : null,
+      },
     });
     
   } catch (error) {
