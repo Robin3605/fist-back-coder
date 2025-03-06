@@ -10,18 +10,17 @@ router.get("/", async (req, res) => {
   try {
     const { limit = 10, page = 1, sort, query } = req.query;
 
-    
     let sortOptions = {};
     if (sort === "asc") {
-      sortOptions = { price: 1 }; 
+      sortOptions = { price: 1 };
     } else if (sort === "desc") {
-      sortOptions = { price: -1 }; 
+      sortOptions = { price: -1 };
     }
 
     const options = {
       limit: parseInt(limit),
       page: parseInt(page),
-      sort: sortOptions, 
+      sort: sortOptions,
       lean: true,
     };
 
@@ -29,21 +28,19 @@ router.get("/", async (req, res) => {
 
     if (query) {
       if (query === "available") {
-        filter.status = true; 
+        filter.status = true;
       } else {
-        filter.category = query; 
+        filter.category = query;
       }
     }
 
     const result = await Product.paginate(filter, options);
 
-    
     console.log("Resultados obtenidos:", result.docs.length);
     console.log("Límite aplicado:", options.limit);
 
-    
     res.render("home", {
-      products: result.docs, 
+      products: result.docs,
       pagination: {
         totalPages: result.totalPages,
         hasPrevPage: result.hasPrevPage,
@@ -54,14 +51,17 @@ router.get("/", async (req, res) => {
         sort,
         query,
         prevLink: result.hasPrevPage
-          ? `/?limit=${limit}&page=${result.prevPage}&sort=${sort || ""}&query=${query || ""}`
+          ? `/?limit=${limit}&page=${result.prevPage}&sort=${
+              sort || ""
+            }&query=${query || ""}`
           : null,
         nextLink: result.hasNextPage
-          ? `/?limit=${limit}&page=${result.nextPage}&sort=${sort || ""}&query=${query || ""}`
+          ? `/?limit=${limit}&page=${result.nextPage}&sort=${
+              sort || ""
+            }&query=${query || ""}`
           : null,
       },
     });
-    
   } catch (error) {
     console.error("Error en la ruta home:", error);
     res.status(500).send("Error interno del servidor");
@@ -82,26 +82,22 @@ router.get("/products/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
 
-   
     if (!mongoose.Types.ObjectId.isValid(pid)) {
       return res.status(404).json({ message: "ID no válido" });
     }
 
-    
     const product = await Product.findById(pid).lean();
 
     if (!product) {
       return res.status(404).json({ message: "Producto no encontrado" });
     }
 
-    
     res.render("productDetail", { product });
   } catch (error) {
     console.error("Error en la ruta products/:pid:", error);
     res.status(500).send("Error interno del servidor");
   }
 });
-
 
 router.get("/carts/:cid", async (req, res) => {
   try {
@@ -110,31 +106,31 @@ router.get("/carts/:cid", async (req, res) => {
       .lean();
 
     if (!cart) {
-      return res.status(404).render("error", { message: "Carrito no encontrado" });
+      return res
+        .status(404)
+        .render("error", { message: "Carrito no encontrado" });
     }
 
     res.render("cart", {
       cart,
-     
     });
   } catch (error) {
     res.status(404).render("error", { message: "Carrito no encontrado" });
   }
 });
 
-
 router.get("/cart", async (req, res) => {
   try {
-    
     let cart = await Cart.findOne({ active: true });
     if (!cart) {
       cart = await Cart.create({ products: [], active: true });
     }
 
-    
     res.redirect(`/carts/${cart._id}`);
   } catch (error) {
-    res.status(500).render("error", { message: "Error al obtener el carrito activo" });
+    res
+      .status(500)
+      .render("error", { message: "Error al obtener el carrito activo" });
   }
 });
 
